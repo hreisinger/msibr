@@ -84,7 +84,7 @@ lat {nlat} 2  0.0 0.0  {n} {n}  {pitch} \n'''
         lattice += thisline
 
     lattice = lattice.format(**locals())
-    return (lattice)
+    return lattice
 
 
 # This executes if someone tries to run the module
