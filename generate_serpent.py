@@ -38,9 +38,9 @@ with open(qsubtemplate, 'r') as temp:
 # From .108 cm to .327 cm. NOT ACTIVE
 # 73 different slit widths are attempted. NOT ACTIVE
 blankets = np.linspace(0.85, .85, 1)
-temperatures = np.linspace(500, 700, 101)
+temperatures = np.linspace(700, 700, 1)
 
-dirName = "MSIBR_RUNS12/"
+dirName = "MSIBR_RUNS13/"
 os.mkdir(dirName)
 os.chdir(dirName)
 
@@ -65,9 +65,12 @@ for BlanketFraction in blankets:
         title = "MSiBR: bFrac = " + str(bName) + ', Temp =' + str(hName)
 
         # Make the deck
+
+        reprocessingOrder = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        
         serp_deck = deck.write_deck(fsf=FSF, relba=RELBA, pitch=PITCH, slit=0.108, temp=t,
                                     rfuel=RFUEL, rcore=RCORE, r2=R2, zcore=150, refl_ht=ZREFL,
-                                    name=title, BlanketFraction=.85)
+                                    name=title, BlanketFraction=.85, repro=False)
 
         FILENAME = "msibr_{bName}_{hName}.inp".format(**locals())
 

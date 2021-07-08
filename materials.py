@@ -3,38 +3,57 @@
 # Materials: Writes the material cards for the Serpent input deck.
 
 
-def write_materials(temp):
+def write_materials(temp, repro=False):
 	'''Function to write material cards for Serpent input deck.
 Inputs: these are old
 	temp: core temperature
-    lib:    String containing the neutron cross section library to use.
-    scat_lib : thermal scattering library
+	lib:    String containing the neutron cross section library to use.
+	scat_lib : thermal scattering library
 Outputs:
-    mats:    String containing the material cards'''
-	temp += 273 # convert C to K to more easily use libraries
-	# set neutron cross section library 
-	if temp >= 300 and temp < 600: lib = '03c'
-	if temp >= 600 and temp < 900: lib = '06c'
-	if temp >= 900 and temp < 1200: lib = '09c'
-	if temp >= 1200 and temp < 1500: lib = '12c' 
-    
+	mats:    String containing the material cards'''
+	temp += 273  # convert C to K to more easily use libraries
+	# set neutron cross section library
+	if 300 <= temp < 600:
+		lib = '03c'
+	if 600 <= temp < 900:
+		lib = '06c'
+	if 900 <= temp < 1200:
+		lib = '09c'
+	if 1200 <= temp < 1500:
+		lib = '12c'
+
 	# set thermal scattering libraries
-	if temp == 400: scat_lib = 'gre7.14t'
-	if temp > 400 and temp < 600: scat_lib = 'gre7.14t gre7.16t'
-	if temp == 600: scat_lib = 'gre7.16t'
-	if temp > 600 and temp < 800: scat_lib = 'gre7.16t gre7.18t'
-	if temp == 800: scat_lib = 'gre7.18t'
-	if temp > 800 and temp < 1000: scat_lib = 'gre7.18t gre7.20t'
-	if temp == 1000: scat_lib = 'gre7.20t'
-	if temp > 1000 and temp < 1200: scat_lib = 'gre7.20t gre7.22t'
-	if temp == 1200: scat_lib = 'gre7.22t'
-	if temp > 1200 and temp < 1500: scat_lib = 'gre7.22t gre7.24t'
-    
+	if temp == 400:
+		scat_lib = 'gre7.14t'
+	if 400 < temp < 600:
+		scat_lib = 'gre7.14t gre7.16t'
+	if temp == 600:
+		scat_lib = 'gre7.16t'
+	if 600 < temp < 800:
+		scat_lib = 'gre7.16t gre7.18t'
+	if temp == 800:
+		scat_lib = 'gre7.18t'
+	if 800 < temp < 1000:
+		scat_lib = 'gre7.18t gre7.20t'
+	if temp == 1000:
+		scat_lib = 'gre7.20t'
+	if 1000 < temp < 1200:
+		scat_lib = 'gre7.20t gre7.22t'
+	if temp == 1200:
+		scat_lib = 'gre7.22t'
+	if 1200 < temp < 1500:
+		scat_lib = 'gre7.22t gre7.24t'
+
 	# change density of major components to match temperature (reference DMSR project) 973K nominal
-	fuel_dens = 2.03434 - (temp - 973)*1*10**(-3)
-	blanket_dens = 4.43711 - (temp - 973)*1*10**(-3)
-	gr_dens = 1.82/((1. + (temp - 973)*4.14*10**(-6))**3)
-	
+	fuel_dens = 2.03434 - (temp - 973) * 1 * 10 ** (-3)
+	blanket_dens = 4.43711 - (temp - 973) * 1 * 10 ** (-3)
+	gr_dens = 1.82 / ((1. + (temp - 973) * 4.14 * 10 ** (-6)) ** 3)
+
+	if repro is not False:
+		burnVol = '''burn 1 vol 1e6'''
+	else:
+		burnVol = ''''''
+
 	mats = '''
 %-------material definition--------------
 %NOTE: VOLUMES OR MASS OF EACH MAY NEED TO 
@@ -45,7 +64,7 @@ Outputs:
 %  MELT TEMP: 450C or 742.15K
 %  MATERIAL INFO FROM ONRL-4528 TALBE 3.1.
 %  MAY NEED VOLUME OR MASS FOR BURNUP CALCULATIONS
-mat fuel -{fuel_dens}  tmp {temp}
+mat fuel -{fuel_dens}  tmp {temp} {burnVol}
 rgb 130 32 144
 3006.{lib}   -0.000725     %  Li6
 3007.{lib}  -14.495960     %  Li7
@@ -59,7 +78,7 @@ rgb 130 32 144
 %  MELT TEMP: 560C or 833.15K
 %  MATERIAL INFO FROM ONRL-4528 TALBE 3.1.
 %  MAY NEED VOLUME OR MASS FOR BURNUP CALCULATIONS
-mat blanket -{blanket_dens} tmp {temp}
+mat blanket -{blanket_dens} tmp {temp} {burnVol}
 rgb 0 157 254 
 3006.{lib}   -0.000243     %  Li6
 3007.{lib}   -4.855845     %  Li7
@@ -131,6 +150,6 @@ rgb 139 69 19
 
 
 if __name__ == '__main__':
-    print("This is a module to write materials for the MSR core.")
-    input("Press Ctrl+C to quit, or enter else to test it. ")
-    print(write_materials())
+	print("This is a module to write materials for the MSR core.")
+	input("Press Ctrl+C to quit, or enter else to test it. ")
+	print(write_materials())

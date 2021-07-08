@@ -4,14 +4,14 @@
 # A script that generates the Serpent input deck for the MSiBR
 
 import math
-import lattice, surfs, cells, materials
+import lattice, surfs, cells, materials, reprocessing
 
 
 def write_deck(fsf=0.07, relba=0.08, \
                pitch=11.500, \
                slit=0.2, temp=700, r2=3.3, rs=0.9, \
                rfuel=150, rcore=215, zcore=400, refl_ht=100, \
-               name='Test deck', BlanketFraction=1):
+               name='Test deck', BlanketFraction=1, repro=False):
     '''Write the actual Serpent deck
 	Inputs: these are old
 * channel_pitch:  hexagonal pitch of fuel cells [cm]
@@ -135,7 +135,7 @@ Advisor: Dr. Ondrej Chvala
     lattice_cards += lattice.write_lattice(rfuel, PITCH, rcore_inner, 42, uhp, uhp, uhp, fuel_cells, blan_cells)
     output += lattice_cards
 
-    mat_cards = materials.write_materials(TEMP)
+    mat_cards = materials.write_materials(TEMP, repro)
     output += mat_cards
 
     data_cards = '''
@@ -164,6 +164,25 @@ plot 3 3000 3000 29 -50 50 -50 50
 %plot 3 3000 3000 29 -5 5 -5 5
 	'''
     output += plot_cards
+
+    if repro is not False:
+        repOrder = repro
+        reprocessing_card = reprocessing.write_init(TEMP)
+        reprocessing_card += reprocessing.write_scheme(repOrder)
+        reprocessing_card += '''
+set printm 1 %prints out isotopic compositions of burnt materials over depletion
+set powdens 1E-2 % power density in [kW/g]
+%%%%%this is watts per cubic centimeter of heavy metal (pretty sure, power is nicer than powdens)
+        '''
+        reprocessing_card += reprocessing.write_daySteps(days=9, interval=18)
+        reprocessing_card += '''
+set inventory
+Th-232
+U-233
+        '''
+        output += reprocessing_card
+
+
 
     output = output.format(**locals())
 
