@@ -11,7 +11,7 @@ def write_deck(fsf=0.07, relba=0.08, \
                pitch=11.500, \
                slit=0.2, temp=700, r2=3.3, rs=0.9, \
                rfuel=150, rcore=215, zcore=400, refl_ht=100, \
-               name='Test deck', BlanketFraction=1, repro=False):
+               name='Test deck', BlanketFraction=1, repro=False, controlRod=False, tempAug=None):
     '''Write the actual Serpent deck
 	Inputs: these are old
 * channel_pitch:  hexagonal pitch of fuel cells [cm]
@@ -106,10 +106,10 @@ Advisor: Dr. Ondrej Chvala
 
     surface_cards = surfs.write_surfs(FSF, RELBA, PITCH, SLIT, TEMP, r2, rs, \
                                       rfuel, rcore_inner, rcore_outer, \
-                                      zcore, plenum_ht, refl_ht, BlanketFraction)
+                                      zcore, plenum_ht, refl_ht, BlanketFraction, tempAug=tempAug)
     output += surface_cards
 
-    cell_cards = cells.write_cells(UNIVERSES, LATS, 18, 31, 19, 20)
+    cell_cards = cells.write_cells(UNIVERSES, LATS, 18, 31, 19, 20, controlRod=controlRod)
     output += cell_cards
 
     # Create the middle/active core
@@ -135,7 +135,7 @@ Advisor: Dr. Ondrej Chvala
     lattice_cards += lattice.write_lattice(rfuel, PITCH, rcore_inner, 42, uhp, uhp, uhp, fuel_cells, blan_cells)
     output += lattice_cards
 
-    mat_cards = materials.write_materials(TEMP, repro)
+    mat_cards = materials.write_materials(TEMP, repro, tempAug=tempAug)
     output += mat_cards
 
     data_cards = '''
@@ -145,8 +145,8 @@ set nfg  2  0.625E-6
 
 % --- Neutron population and criticality cycles:
 
-set pop 2000 500 20
-
+set pop 50000 200 15
+set nbuf 10
 
 %% --- Data Libraries
 set acelib "/opt/serpent/xsdata/jeff31/sss_jeff31u.xsdata"
@@ -174,7 +174,7 @@ set printm 1 %prints out isotopic compositions of burnt materials over depletion
 set powdens 1E-2 % power density in [kW/g]
 %%%%%this is watts per cubic centimeter of heavy metal (pretty sure, power is nicer than powdens)
         '''
-        reprocessing_card += reprocessing.write_daySteps(days=9, interval=18)
+        reprocessing_card += reprocessing.write_daySteps(days=14, interval=7)
         reprocessing_card += '''
 set inventory
 Th-232

@@ -4,7 +4,7 @@
 
 
 def write_cells(universes=range(1, 1 + 12), lattices=range(33, 33 + 7),
-                surffuel=30, surfcore=31, surfgref=32, surfhast=29):
+                surffuel=30, surfcore=31, surfgref=32, surfhast=29, controlRod=False):
     '''Function to write cell cards for Serpent input deck.
 	Inputs: these are old
 		universes:		Tuple(12) containing the following.
@@ -178,14 +178,25 @@ cell 999 0 outside {surfhast} 60 -82
 cell 998 0 outside -60
 cell 997 0 outside  82
 	'''
-    central = False
-    clusterArray = [False,
-                    False,
-                    False,
-                    False,
-                    False,
-                    False]
+    central = None
+    clusterSet = None
 
+    if controlRod is False:
+        central = False
+        clusterArray = [False,
+                        False,
+                        False,
+                        False,
+                        False,
+                        False]
+    elif controlRod is True:
+        central = True
+        clusterArray = [True,
+                        True,
+                        True,
+                        True,
+                        True,
+                        True]
     clusterSet = [None,
                   None,
                   None,

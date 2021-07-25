@@ -147,22 +147,35 @@ set depmtx 1 %dumps depletion matrices if needed. should be one per burnt materi
     return init_rep
 
 def write_scheme(rep_order):
+
+
     scheme = '''
+%syntax:
+% rc <from_mat> <to_mat> <mflow> <setting> where "setting" is either 0 or 1.
 rep the_reprocessing_scheme
-rc Th_stock blanket thor_in {rep_order[0]}
 %the number one indicates that a removal term appears in the bateman equations for thoriu$
 % and a corresponding addition term in the batemans for the blanket salt.
-rc U_stock fuel U_in {rep_order[1]}
-rc blanket offgastankblanket offgasrateblanket {rep_order[2]}
-rc fuel offgastankcore offgasratecore {rep_order[3]}
-rc blanket noblemetalblanket offnobleblanket {rep_order[4]}
-rc fuel noblemetalcore offnoblecore {rep_order[5]}
-rc blanket lanthtankblanket offlanthblanket {rep_order[6]}
-rc fuel lanthtankcore offlanthcore {rep_order[7]}
-rc blanket alkhaltankblanket offalkhalblanket {rep_order[8]}
-rc fuel alkhaltankcore offalkhalcore {rep_order[9]}
-rc blanket U_stock U_out {rep_order[10]}
     '''
+    template = ['''
+rc Th_stock blanket thor_in 1
+''','''rc U_stock fuel U_in 0
+''','''rc blanket offgastankblanket offgasrateblanket 1
+''','''rc fuel offgastankcore offgasratecore 1
+''','''rc blanket noblemetalblanket offnobleblanket 1
+''','''rc fuel noblemetalcore offnoblecore 1
+''','''rc blanket lanthtankblanket offlanthblanket 1
+''','''rc fuel lanthtankcore offlanthcore 1
+''','''rc blanket alkhaltankblanket offalkhalblanket 1
+''','''rc fuel alkhaltankcore offalkhalcore 1
+''','''rc blanket U_stock U_out 1
+''']
+    for i in range(0, len(rep_order)):
+        if rep_order[i] is True:
+            scheme += template[i]
+        else:
+            scheme += '% ' + template[i]
+
+
 
     scheme = scheme.format(**locals())
     return scheme
@@ -172,19 +185,21 @@ def write_daySteps(days=9, interval=18):
 dep
 pro the_reprocessing_scheme
 daystep
+.05 .05 .1 .2 .2 .2 .2
+.2 .2 .2 .2 .2
+.5 .5
+.5 .5
+.5 .5
+.5 .5
+.5 .5
+.5 .5
+.5 .5
+.5 .5
+.5 .5
+.5 .5
+.5 .5
+.5 .5
 '''
-    step = days/interval
-    placement = 0
-    dayStepLine = ''''''
-    for i in range(0,interval+1):
-        dayStepLine += '''{step} '''
-        if len(dayStepLine) > 80:
-            dayStepLine += '''
-            '''
-            dayStep += dayStepLine
-            dayStepLine = ''''''
-    dayStep += '''
-    '''
 
     dayStep = dayStep.format(**locals())
     return dayStep
