@@ -11,7 +11,7 @@ def write_deck(fsf=0.07, relba=0.08, \
                pitch=11.500, \
                slit=0.2, temp=700, r2=3.3, rs=0.9, \
                rfuel=150, rcore=215, zcore=400, refl_ht=100, \
-               name='Test deck', BlanketFraction=1, repro=False, controlRod=False, tempAug=None):
+               name='Test deck', BlanketFraction=1, repro=False, controlRods=False, tempAug=None):
     '''Write the actual Serpent deck
 	Inputs: these are old
 * channel_pitch:  hexagonal pitch of fuel cells [cm]
@@ -75,6 +75,7 @@ Advisor: Dr. Ondrej Chvala
     uhsu = 8  # holding shafts upper
     uhsl = 9  # holding shafts lower
     uhp = 12  # holding plate
+    ucNone, ucCentral, ucOuter, ucCentralOuter = range(51, 55)
 
     # Tuple of all the universe numbers
     UNIVERSES = (
@@ -89,7 +90,11 @@ Advisor: Dr. Ondrej Chvala
         ulp,  # lower plenum (pure fuel)
         uuc,  # upper control
         ulc,  # lower	control
-        uh)  # pure hastelloy hex
+        uh,
+        ucNone,
+        ucCentral,
+        ucOuter,
+        ucCentralOuter)  # pure hastelloy hex
 
     rcore_inner = rcore - 2 * 2.54
     rcore_outer = rcore
@@ -109,11 +114,12 @@ Advisor: Dr. Ondrej Chvala
                                       zcore, plenum_ht, refl_ht, BlanketFraction, tempAug=tempAug)
     output += surface_cards
 
-    cell_cards = cells.write_cells(UNIVERSES, LATS, 18, 31, 19, 20, controlRod=controlRod)
+    cell_cards = cells.write_cells(UNIVERSES, LATS, 18, 31, 19, 20)
     output += cell_cards
 
     # Create the middle/active core
-    lattice_cards = lattice.write_lattice(rfuel, PITCH, rcore_inner, LATS[0], ub, uf, uc, fuel_cells, blan_cells)
+    lattice_cards = lattice.write_lattice(rfuel, PITCH, rcore_inner, LATS[0], ub, uf, uc, fuel_cells, blan_cells,
+                                          controlRodsU=[ucNone, ucCentral, ucOuter, ucCentralOuter], controlRods=controlRods)
     # Create the upper plenum
     lattice_cards += lattice.write_lattice(rfuel, PITCH, rcore_inner, LATS[1], ub, uup, uuc, fuel_cells, blan_cells)
     # Create the lower level -1
@@ -146,7 +152,7 @@ set nfg  2  0.625E-6
 % --- Neutron population and criticality cycles:
 
 set pop 50000 200 15
-set nbuf 10
+set nbuf 15
 
 %% --- Data Libraries
 set acelib "/opt/serpent/xsdata/jeff31/sss_jeff31u.xsdata"
@@ -181,8 +187,6 @@ Th-232
 U-233
         '''
         output += reprocessing_card
-
-
 
     output = output.format(**locals())
 
