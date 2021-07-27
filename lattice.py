@@ -6,9 +6,9 @@ import math
 from math import ceil, sqrt, pi
 
 
-def write_lattice(rmax=100, pitch=11.5, core=200, nlat='1', \
-                  ub='1', uf='2', uc='3', \
-                  nf=6, nb=1):
+def write_lattice(rmax=100, pitch=11.5, core=200, nlat='1',
+                  ub='1', uf='2', uc='3',
+                  nf=6, nb=1, controlRodsU=None, controlRods=None):
     '''Function to write the hexagonal lattice of the given type
 	Accepts as input: these are old
 		nlat:		number identifying the lattice
@@ -20,6 +20,17 @@ def write_lattice(rmax=100, pitch=11.5, core=200, nlat='1', \
 		lattice:	string containing the generated lattice card'''
 
     # Structure of a SERPENT lattice card
+    if controlRodsU is None:
+        controlRodsU = [51, 52, 53, 54]
+    if controlRods is None or False:
+        controlRods = [{'Center': False, 'NE': False, 'SE': False, 'SW': False, 'NW': False},
+                       {'Center': False, 'NE': False, 'SE': False, 'SW': False, 'NW': False}]
+    if controlRods is True:
+        controlRods = [{'Center': True, 'NE': True, 'SE': True, 'SW': True, 'NW': True},
+                       {'Center': True, 'NE': True, 'SE': True, 'SW': True, 'NW': True}]
+
+    centralRods = controlRods[0]
+    outerRods = controlRods[1]
     '''lat <u0> <type> <x0> <y0> <nx> <ny> <p>
 	#
 	# <u0> is the universe number of the lattice
@@ -40,6 +51,11 @@ def write_lattice(rmax=100, pitch=11.5, core=200, nlat='1', \
     ub = str(ub) + ' '
     uf = str(uf) + ' '
     uc = str(uc) + ' '
+    ucNone = str(controlRodsU[0]) + ' '
+    ucCentral = str(controlRodsU[1]) + ' '
+    ucOuter = str(controlRodsU[2]) + ' '
+    ucCentralOuter = str(controlRodsU[3]) + ' '
+
     # and these go in a x type hex lattice
     n = 2 * int(ceil(core / pitch)) + 10
     n += 1 if n % 2 == 0 else 0  # make sure it is an odd pin num to center it
@@ -57,6 +73,7 @@ lat {nlat} 2  0.0 0.0  {n} {n}  {pitch} \n'''
     y0 -= n * sqrt(3.0) / 4.0 * pitch - sqrt(3.0) / 4.0 * pitch
     value_x = 28
     value_y = 24.248711305964264
+
     for i in range(n):  # y positions
         thisline = ''  # lattice line in input file
         thisline += ' ' * i  # indent to show hex better
@@ -69,11 +86,39 @@ lat {nlat} 2  0.0 0.0  {n} {n}  {pitch} \n'''
             if lat_r < rmax:
                 # if lattice radius is in the center, write the unique central channel
                 if int(x) == 0 and int(y) == 0:
-                    #print("Center!")
-                    thisline += uc
+                    location = 'Center'
+                    if centralRods[location] is False and outerRods[location] is False:
+                        thisline += ucNone
+                    elif centralRods[location] is True and outerRods[location] is False:
+                        thisline += ucCentral
+                    elif centralRods[location] is False and outerRods[location] is True:
+                        thisline += ucOuter
+                    elif centralRods[location] is True and outerRods[location] is True:
+                        thisline += ucCentralOuter
+                    else:
+                        thisline += uf
                 elif abs(int(x)) == int(value_x) and abs(int(y)) == int(value_y):
-                    #print("Corner")
-                    thisline += uc
+                    location = None
+                    if int(x) > 0 and int(y) > 0:
+                        location = 'NE'
+                    elif int(x) > 0 and int(y) < 0:
+                        location = 'SE'
+                    elif int(x) < 0 and int(y) < 0:
+                        location = 'SW'
+                    elif int(x) < 0 and int(y) > 0:
+                        location = 'NW'
+
+                    if centralRods[location] is False and outerRods[location] is False:
+                        thisline += ucNone
+                    elif centralRods[location] is True and outerRods[location] is False:
+                        thisline += ucCentral
+                    elif centralRods[location] is False and outerRods[location] is True:
+                        thisline += ucOuter
+                    elif centralRods[location] is True and outerRods[location] is True:
+                        thisline += ucCentralOuter
+                    else:
+                        thisline += uf
+
                 else:
                     thisline += uf  # add a fuel channel to geometry
             elif lat_r < core:
