@@ -24,7 +24,6 @@ TEMP = 700  # temp in C nominal 700C
 
 cwdStart = os.getcwd()
 
-
 dirName = "MSIBR_ControlRods"
 
 os.mkdir(dirName)
@@ -32,9 +31,7 @@ os.chdir(dirName)
 
 sigFig = 3
 
-
 blankets = np.linspace(0.7, 0.9, 11)
-
 heights = np.linspace(140, 140, 1)
 temperatures = np.linspace(500, 700, 101)
 repros = np.array([[False, False, False, False, False, False, False, False, False, False, False],
@@ -50,7 +47,6 @@ repros = np.array([[False, False, False, False, False, False, False, False, Fals
                    [True, True, True, True, True, True, True, True, True, True, False],
                    [True, True, True, True, True, True, True, True, True, True, True]])
 
-
 Augs = ['Graphite', 'Fuel', 'Blanket']
 tempRange = np.linspace(-100, 100, 5)
 
@@ -62,7 +58,6 @@ tempAugTemplate = {
     'Control Rod': TEMP,
     'Hastelloy': TEMP
 }
-
 tempAug = tempAugTemplate
 
 rodLocations = [
@@ -132,7 +127,6 @@ for i in range(0, len(variable1)):
             pass
         else:
             v2Name = 'b_' + str(np.round(v2, 2))
-
         os.mkdir(v2Name)
         os.chdir(v2Name)
 
