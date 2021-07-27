@@ -11,7 +11,9 @@ def write_deck(fsf=0.07, relba=0.08, \
                pitch=11.500, \
                slit=0.2, temp=700, r2=3.3, rs=0.9, \
                rfuel=150, rcore=215, zcore=400, refl_ht=100, \
+
                name='Test deck', BlanketFraction=1, repro=False, controlRods=False, tempAug=None):
+
     '''Write the actual Serpent deck
 	Inputs: these are old
 * channel_pitch:  hexagonal pitch of fuel cells [cm]
@@ -114,7 +116,7 @@ Advisor: Dr. Ondrej Chvala
                                       zcore, plenum_ht, refl_ht, BlanketFraction, tempAug=tempAug)
     output += surface_cards
 
-    cell_cards = cells.write_cells(UNIVERSES, LATS, 18, 31, 19, 20)
+    cell_cards = cells.write_cells(UNIVERSES, LATS, 18, 31, 19, 20, controlRod=controlRod)
     output += cell_cards
 
     # Create the middle/active core
@@ -152,7 +154,9 @@ set nfg  2  0.625E-6
 % --- Neutron population and criticality cycles:
 
 set pop 50000 200 15
+
 set nbuf 15
+
 
 %% --- Data Libraries
 set acelib "/opt/serpent/xsdata/jeff31/sss_jeff31u.xsdata"

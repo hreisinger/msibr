@@ -4,7 +4,7 @@
 
 
 def write_cells(universes=range(1, 1 + 12), lattices=range(33, 33 + 7),
-                surffuel=30, surfcore=31, surfgref=32, surfhast=29):
+                surffuel=30, surfcore=31, surfgref=32, surfhast=29, controlRod=False):
     '''Function to write cell cards for Serpent input deck.
 	Inputs: these are old
 		universes:		Tuple(12) containing the following.

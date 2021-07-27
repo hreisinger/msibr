@@ -2,6 +2,7 @@ import numpy as np
 import math
 
 bfArray = np.array([0.8])
+
 temp = 700
 hpitch = 14/2
 hexarea = 2.0 * math.sqrt(3.0) * hpitch ** 2

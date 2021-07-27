@@ -24,13 +24,17 @@ TEMP = 700  # temp in C nominal 700C
 
 cwdStart = os.getcwd()
 
+
 dirName = "MSIBR_ControlRods"
+
 os.mkdir(dirName)
 os.chdir(dirName)
 
 sigFig = 3
 
+
 blankets = np.linspace(0.7, 0.9, 11)
+
 heights = np.linspace(140, 140, 1)
 temperatures = np.linspace(500, 700, 101)
 repros = np.array([[False, False, False, False, False, False, False, False, False, False, False],
@@ -46,8 +50,10 @@ repros = np.array([[False, False, False, False, False, False, False, False, Fals
                    [True, True, True, True, True, True, True, True, True, True, False],
                    [True, True, True, True, True, True, True, True, True, True, True]])
 
+
 Augs = ['Graphite', 'Fuel', 'Blanket']
 tempRange = np.linspace(-100, 100, 5)
+
 tempAugTemplate = {
     'Graphite': TEMP,
     'Fuel': TEMP,
@@ -56,6 +62,7 @@ tempAugTemplate = {
     'Control Rod': TEMP,
     'Hastelloy': TEMP
 }
+
 tempAug = tempAugTemplate
 
 rodLocations = [
@@ -96,13 +103,16 @@ print(outerChange)
 variable1 = centralChange
 variable2 = outerChange
 
+
 for i in range(0, len(variable1)):
     print(str(np.round(i / len(variable1) * 100, 2)) + "%")
     v1 = variable1[i]
+
     if True:
         v1 = v1
         print(v1)
         v1Name = 'CR_' + str(np.count_nonzero(list(v1.values())))
+
         pass
     else:
         v1Name = 'h_' + str(v1)
@@ -112,6 +122,7 @@ for i in range(0, len(variable1)):
     for j in range(0, len(variable2)):
 
         v2 = variable2[j]
+
         print(v2)
         # tempAug[v1] += v2
         print(tempAug)
@@ -121,6 +132,7 @@ for i in range(0, len(variable1)):
             pass
         else:
             v2Name = 'b_' + str(np.round(v2, 2))
+
         os.mkdir(v2Name)
         os.chdir(v2Name)
 
@@ -130,6 +142,7 @@ for i in range(0, len(variable1)):
                                     rfuel=RFUEL, rcore=RCORE, r2=R2, zcore=140, refl_ht=ZREFL,
                                     name=title, BlanketFraction=0.8,
                                     repro=False, controlRods=[v1, v2])
+
 
         # tempAug[v1] -= v2
 
