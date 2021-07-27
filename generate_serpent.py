@@ -8,6 +8,7 @@
 import deck
 import os
 import numpy as np
+import shutil
 
 # Parameters from the infinite lattice optimization
 FSF = .165  # fuel salt fraction
@@ -21,69 +22,122 @@ ZCORE = 404
 ZREFL = 100
 TEMP = 700  # temp in C nominal 700C
 
-# Job submission settings: currently not in use
-FILENAME = "msibr_2.inp"
-qsubtemplate = 'qsubtemplate.txt'
-nperjob = 2  # num nodes per job
-ncpu = 8  # cpu per job
-queue = 'gen5'
+cwdStart = os.getcwd()
 
-'''#now the qsub text is constructed.
-qtext=[]
-with open(qsubtemplate, 'r') as temp:
-    text=temp.read()
-    for line in text:
-       qtext.append(line.format(**locals())) 
-'''
-# From .108 cm to .327 cm. NOT ACTIVE
-# 73 different slit widths are attempted. NOT ACTIVE
-blankets = np.linspace(0.85, .85, 1)
-temperatures = np.linspace(700, 700, 1)
-
-dirName = "MSIBR_RUNS13/"
+dirName = "MSIBR_ControlRods"
 os.mkdir(dirName)
 os.chdir(dirName)
 
-i = 0
-
 sigFig = 3
 
-for BlanketFraction in blankets:
-    # create the directory
-    # go into the directory to run this lattice in
+blankets = np.linspace(0.7, 0.9, 11)
+heights = np.linspace(140, 140, 1)
+temperatures = np.linspace(500, 700, 101)
+repros = np.array([[False, False, False, False, False, False, False, False, False, False, False],
+                   [True, False, False, False, False, False, False, False, False, False, False],
+                   [True, True, False, False, False, False, False, False, False, False, False],
+                   [True, True, True, False, False, False, False, False, False, False, False],
+                   [True, True, True, True, False, False, False, False, False, False, False],
+                   [True, True, True, True, True, False, False, False, False, False, False],
+                   [True, True, True, True, True, True, False, False, False, False, False],
+                   [True, True, True, True, True, True, True, False, False, False, False],
+                   [True, True, True, True, True, True, True, True, False, False, False],
+                   [True, True, True, True, True, True, True, True, True, False, False],
+                   [True, True, True, True, True, True, True, True, True, True, False],
+                   [True, True, True, True, True, True, True, True, True, True, True]])
 
-    bName = str(np.round(BlanketFraction, sigFig))
-    bName = bName.ljust(sigFig+2, '0')
-    slitName = 'blanketFraction_' + str(bName) + '/'
-    os.mkdir(slitName)
-    os.chdir(slitName)
-    i += 1
-    print(str(np.round(i / len(blankets) * 100, 2)) + "%", bName)
-    for t in temperatures:
-        hName = str(np.round(t, sigFig))
-        hName = hName.ljust(sigFig + 2, '0')
-        title = "MSiBR: bFrac = " + str(bName) + ', Temp =' + str(hName)
+Augs = ['Graphite', 'Fuel', 'Blanket']
+tempRange = np.linspace(-100, 100, 5)
+tempAugTemplate = {
+    'Graphite': TEMP,
+    'Fuel': TEMP,
+    'Blanket': TEMP,
+    'Helium': TEMP,
+    'Control Rod': TEMP,
+    'Hastelloy': TEMP
+}
+tempAug = tempAugTemplate
 
-        # Make the deck
+rodLocations = [
+    'Center', 'NE', 'SE', 'SW', 'NW'
+]
+centralRods = {
+    'Center': False,
+    'NE': False,
+    'SE': False,
+    'SW': False,
+    'NW': False
+}
+outerRods = {
+    'Center': False,
+    'NE': False,
+    'SE': False,
+    'SW': False,
+    'NW': False
+}
 
-        reprocessingOrder = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        
-        serp_deck = deck.write_deck(fsf=FSF, relba=RELBA, pitch=PITCH, slit=0.108, temp=t,
-                                    rfuel=RFUEL, rcore=RCORE, r2=R2, zcore=150, refl_ht=ZREFL,
-                                    name=title, BlanketFraction=.85, repro=False)
 
-        FILENAME = "msibr_{bName}_{hName}.inp".format(**locals())
+outerChange = [outerRods.copy()]
+centralChange= [centralRods.copy()]
 
-        # now write out the input file.
+for i in range(0, len(rodLocations)):
+    location = rodLocations[i]
+    centralRods[location] = True
+    outerRods[location] = True
+    centralChange.append(centralRods.copy())
+    outerChange.append(outerRods.copy())
+
+
+
+print(centralChange)
+print(outerChange)
+
+
+variable1 = centralChange
+variable2 = outerChange
+
+for i in range(0, len(variable1)):
+    print(str(np.round(i / len(variable1) * 100, 2)) + "%")
+    v1 = variable1[i]
+    if True:
+        v1 = v1
+        print(v1)
+        v1Name = 'CR_' + str(np.count_nonzero(list(v1.values())))
+        pass
+    else:
+        v1Name = 'h_' + str(v1)
+    os.mkdir(v1Name)
+    os.chdir(v1Name)
+
+    for j in range(0, len(variable2)):
+
+        v2 = variable2[j]
+        print(v2)
+        # tempAug[v1] += v2
+        print(tempAug)
+        if True:
+            v2 = v2
+            v2Name = 'OR_' + str(np.count_nonzero(list(v2.values())))
+            pass
+        else:
+            v2Name = 'b_' + str(np.round(v2, 2))
+        os.mkdir(v2Name)
+        os.chdir(v2Name)
+
+        title = 'MSiBR: {} {}'.format(v1Name, v2Name)
+
+        serp_deck = deck.write_deck(fsf=FSF, relba=RELBA, pitch=PITCH, slit=0.108, temp=700,
+                                    rfuel=RFUEL, rcore=RCORE, r2=R2, zcore=140, refl_ht=ZREFL,
+                                    name=title, BlanketFraction=0.8,
+                                    repro=False, controlRods=[v1, v2])
+
+        # tempAug[v1] -= v2
+
+        FILENAME = 'MSiBR.inp'
         with open(FILENAME, 'w') as f:
             f.write(serp_deck)
 
-        # place a qsub script with a descriptive name here.
-    #    with open('{}.sh'.format(dirname),'w') as f:
-    #        f.write(qtext)
-
-    # and finally, submit the job.
-    # os.system('qsub {}'.format(FILENAME+'.sh'))
-
-    # and now return to the original directory.
+        os.chdir('..')
     os.chdir('..')
+os.chdir(cwdStart)
+shutil.copy('{}\{}'.format(cwdStart, 'runAll.py'), '{}\{}'.format(cwdStart, dirName))

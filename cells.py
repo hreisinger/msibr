@@ -24,186 +24,13 @@ def write_cells(universes=range(1, 1 + 12), lattices=range(33, 33 + 7),
     # Unpack the universe tuple
     ub, uf, uc, uup, \
     ul1, ul2, ul3, ul4, \
-    ulp, uuc, ulc, uh = universes
+    ulp, uuc, ulc, uh, \
+    ucNone, ucCentral, ucOuter, ucCentralOuter = universes
     # Unpack the lattice tuple
     latmid, lattop, latbot1, latbot2, latbot3, \
     latbot4, latplen = lattices
 
-    # THESE ARE THE OLD CELL DEFINITIONS THEY ARE KEPT IN CASE THE NEW ONES BREAK
-    '''cells = \'''
-%------define cells--------------------
 
-% Universe {uf}: FUEL CELL U2
-cell 10 {uf} graphite -10 20 22
-cell 13 {uf} graphite 20 -21
-cell 11 {uf} blanket  -11 10 
-%cell 12 {uf} outside   11 
-cell 12 {uf} void  11 
-cell  7 {uf} fuel -20 
-cell  1 {uf} fuel 21 -22 
-
-% Universe 7: Blank Blanket Cell
-cell 701 7 blanket -200
-cell 702 7 blanket 200
-
-% Universe 8: Holding Shafts on top of plate
-cell 801 8 graphite -202
-cell 802 8 blanket  202
-
-% Universe 9: Holding Shafts under plate
-cell 901 9 graphite -206
-cell 902 9 blanket 206
-
-% Universe 12: Holding Plate
-cell 1201 12 graphite -207
-cell 1202 12 hastelloy 207
-
-% Universe {ub}: BLANKET CELL
-cell 15 {ub} graphite -101 %27 -28
-cell 16 {ub} blanket     101 %27 -28
-
-% Universe {uh}: HASTELLOY HEX
-cell 18 {uh} hastelloy -11
-cell 19 {uh} void       11
-
-% Universe {uc}: CONTROL ROD 
-% Similar to fuel cell, but with helium in channels
-cell 30 {uc} graphite -10 20 90 91 92 93 94 95  
-cell 41 {uc} blanket  -11 10 
-cell 401 {uc} blanket -20 
-cell 42 {uc} void   11 %27 -28
-%cell 38 {uc} void  -27
-%cell 39 {uc} void   28
-cell  34 {uc} he -90 %27 -28
-cell  35 {uc} he -91 
-cell  36 {uc} he -92 
-cell  37 {uc} he -93 
-cell  38 {uc} he -94 
-cell  39 {uc} he -95 
-
-
-
-
-
-% Universe {uup}: UPPER CHANNEL
-cell 43 {uup} fuel     -22    	28 -41	% fuel cap
-cell 44 {uup} graphite  22 -10 	28 -41	% graphite,level1
-cell 45 {uup} graphite -10      41 -42	% graphite cap,level2
-cell 46 {uup} blanket  -11 10 	28 -42  % slit all the way through
-cell 47 {uup} void      42
-cell 48 {uup} void     -28
-cell 49 {uup} void      11 		28 -42
-
-% Universe {ul1}: LOWER CHANNEL 1
-cell 51 {ul1} blanket -11 3503 
-cell 52 {ul1} fuel -20    % -27 56  % Central channel
-cell 53 {ul1} hastelloy -53  20 % -27 56  % Hast. pipe
-cell 58 {ul1} graphite -3501 53
-cell 54 {ul1} fuel -3502  3501%53 % 2501  % outer fuel channel
-cell 55 {ul1} graphite -3503 3502 % 3501 was 55 2501 % graphite hex
-cell 59 {ul1} void 11
-
-% Universe {ul2}: LOWER CHANNEL 2
-cell 251 {ul2} blanket -11 57 
-cell 252 {ul2} fuel -20    % -27 56  % Central channel
-cell 253 {ul2} hastelloy -53  20 % -27 56  % Hast. pipe
-cell 254 {ul2} fuel -2501  53 % -27 56  % outer fuel channel
-cell 257 {ul2} hastelloy -57 2501 % -27 56 % outer pipe
-cell 259 {ul2} void 11
-
-% Universe 1111: LOWER PLENUM TOP 
-cell 2611 1111 fuel -11 53
-cell 2621 1111 fuel -20          % Central channel
-cell 2631 1111 hastelloy -53  20 % Inner pipe
-cell 2651 1111 void 11
-
-% Universe {ulp}: LOWER PLENUM BOTTOM
-cell 250 {ulp} fuel -11
-cell 260 {ulp} void  11
-
-% Universe {ul3}: PENENETRATION TO INLET PLENUM
-cell 261 {ul3} hastelloy -11 2501
-cell 262 {ul3} fuel -20          % Central channel
-cell 263 {ul3} hastelloy -53  20 % Inner pipe
-cell 264 {ul3} fuel -2501  53      % outer fuel channel
-cell 265 {ul3} void 11
-% Universe {ul4}: PENETRATION TO OUTLET PLENUM
-cell 266 {ul4} hastelloy -11 20
-cell 267 {ul4} fuel -20
-cell 268 {ul4} void 11
-
-% Universe {uuc}: UPPER CONTROL
-cell 61 {uuc} he       -12    	28 -41	% helium gap
-cell 62 {uuc} graphite  12 -10 	28 -42	% graphite,level1
-cell 63 {uuc} graphite -12      41 -42	% graphite cap,level2
-cell 64 {uuc} blanket  -11 10 	28 -42  % slit all the way through
-cell 65 {uuc} void      42
-cell 66 {uuc} void     -28
-cell 67 {uuc} void      11 		28 -42
-
-% Universe {ulc}: LOWER CONTROL
-cell 71 {ulc} graphite -20               % Central channel - was he
-cell 72 {ulc} graphite -53  20    % Hast. pipe - was hastelelloy
-cell 73 {ulc} graphite -2501  53           % outer fuel channel - was he
-cell 74 {ulc} graphite -55 2501      % graphite hex
-cell 75 {ulc} blanket  -11 55      % blanket reflector
-cell 79 {ulc} void  11 
-
-
-% The main universe
-%cell 100 0 fill    {latmid} -{surffuel}     27 -28
-cell 100 0 fill    {latmid} -{surfgref}     27 -28
-%cell 101 0 blanket {surffuel} -{surfcore}   61 -42 
-%cell 102 0 graphite {surfcore} -{surfgref}  61 -81
-cell 104 0 fill   {lattop} -{surfgref}      28 -42
-cell 105 0 fill   {latbot1} -{surfgref}     52 -27
-cell 106 0 fill   {latbot2} -{surfgref}     56 -52
-cell 107 0 fill   {latbot3} -{surfgref}	  	61 -56
-cell 108 0 fill   43 -{surffuel}	  	62 -61
-cell 109 0 fill   {latbot4} -{surffuel}	  	63 -62
-cell 110 0 fill   {latplen} -{surffuel}	  	64 -63
-cell 111 0 hastelloy       -{surfgref}		60 -64
-cell 112 0 hastelloy {surffuel} -{surfgref} 64 -61
-cell 113 0 hastelloy {surfgref} -{surfhast} 60 -81
-%cell 120 0 blanket  	 	    -{surfgref} 42 -81 102 %-80  -{surfcore}
-%cell 121 0 blanket 	 	    -{surfcore} 80 -81  % was top reflector
-cell 122 0 hastelloy	 	    -{surfhast} 81 -82
-cell 123 0 fill 41 -{surfgref} 208 -209% top graphite reflector
-cell 124 0 fill 42 -{surfgref} 209 -203 % top holding plate
-cell 125 0 fill 40 -{surfgref} 203 -204
-cell 126 0 blanket -205 204 -81
-
-
-cell 999 0 outside {surfhast} 60 -82
-cell 998 0 outside -60
-cell 997 0 outside  82
-	'''
-    central = False
-    clusterArray = [False,
-                    False,
-                    False,
-                    False,
-                    False,
-                    False]
-
-    clusterSet = [None,
-                  None,
-                  None,
-                  None,
-                  None,
-                  None]
-
-    for i in range(0, len(clusterArray)):
-        if clusterArray[i] is True:
-            clusterSet[i] = ['absorber', 'hastelloy']
-
-        elif clusterArray[i] is False:
-            clusterSet[i] = ['he', 'he']
-
-    if central is True:
-        centralRod = ['absorber', 'hastelloy']
-    else:
-        centralRod = ['blanket', 'blanket']
     # New cell definitions
     cells = '''
 %------define cells--------------------
@@ -211,7 +38,7 @@ cell 997 0 outside  82
 cell 15 {ub} graphite   -101
 cell 16 {ub} blanket     101 
 
-	
+
 % Universe {uf}: FUEL CELL U2
 cell 10 {uf} graphite -201 203 205
 cell 13 {uf} graphite 203 -204
@@ -219,39 +46,134 @@ cell 11 {uf} blanket  -202 201
 cell 12 {uf} void  202 
 cell  7 {uf} fuel -203 
 cell  1 {uf} fuel 204 -205 
+    
+    '''
 
-
-% Universe {uc}: CONTROL ROD U3 
+    cells += '''
+% Universe {ucNone}: CONTROL ROD U3 
 % Similar to fuel cell, but with helium in channels
-cell 30 {uc} graphite -301 303 316 317 318 319 320 321  
-cell 31 {uc} blanket  -302 301 
-cell 32 {uc} blanket -303 331
-cell 33 {uc} void   302 
-cell  34 {uc} {clusterSet[0][0]} -304 
-cell  35 {uc} {clusterSet[1][0]} -305 
-cell  36 {uc} {clusterSet[2][0]} -306 
-cell  37 {uc} {clusterSet[3][0]} -307 
-cell  38 {uc} {clusterSet[4][0]} -308 
-cell  39 {uc} {clusterSet[5][0]} -309 
+cell 30 {ucNone} graphite -301 303 316 317 318 319 320 321  
+cell 31 {ucNone} blanket  -302 301 
+cell 32 {ucNone} blanket -303 331
+cell 33 {ucNone} void   302 
+cell  34 {ucNone} he -304 
+cell  35 {ucNone} he -305 
+cell  36 {ucNone} he -306 
+cell  37 {ucNone} he -307 
+cell  38 {ucNone} he -308 
+cell  39 {ucNone} he -309 
 
-cell  40 {uc} {clusterSet[0][1]} 304 -310
-cell  41 {uc} {clusterSet[1][1]} 305 -311
-cell  42 {uc} {clusterSet[2][1]} 306 -312
-cell  43 {uc} {clusterSet[3][1]} 307 -313
-cell  44 {uc} {clusterSet[4][1]} 308 -314
-cell  45 {uc} {clusterSet[5][1]} 309 -315
+cell  40 {ucNone} he 304 -310
+cell  41 {ucNone} he 305 -311
+cell  42 {ucNone} he 306 -312
+cell  43 {ucNone} he 307 -313
+cell  44 {ucNone} he 308 -314
+cell  45 {ucNone} he 309 -315
 
-cell  46 {uc} he 310 -316
-cell  47 {uc} he 311 -317
-cell  48 {uc} he 312 -318
-cell  49 {uc} he 313 -319
-cell  50 {uc} he 314 -320
-cell  51 {uc} he 315 -321
+cell  46 {ucNone} he 310 -316
+cell  47 {ucNone} he 311 -317
+cell  48 {ucNone} he 312 -318
+cell  49 {ucNone} he 313 -319
+cell  50 {ucNone} he 314 -320
+cell  51 {ucNone} he 315 -321
 
-cell  52 {uc} {centralRod[0]} -330
-cell  53 {uc} {centralRod[1]} -331 330
+cell  52 {ucNone} blanket -330
+cell  53 {ucNone} blanket -331 330
+'''
+    cells += '''
+% Universe {ucCentral}: CONTROL ROD U3 
+% Similar to fuel cell, but with helium in channels
+cell  400 {ucCentral} graphite -301 303 316 317 318 319 320 321  
+cell  401 {ucCentral} blanket  -302 301 
+cell  402 {ucCentral} blanket -303 331
+cell  403 {ucCentral} void   302 
+cell  404 {ucCentral} he -304 
+cell  405 {ucCentral} he -305 
+cell  406 {ucCentral} he -306 
+cell  407 {ucCentral} he -307 
+cell  408 {ucCentral} he -308 
+cell  409 {ucCentral} he -309 
 
+cell  410 {ucCentral} he 304 -310
+cell  411 {ucCentral} he 305 -311
+cell  412 {ucCentral} he 306 -312
+cell  413 {ucCentral} he 307 -313
+cell  414 {ucCentral} he 308 -314
+cell  415 {ucCentral} he 309 -315
 
+cell  416 {ucCentral} he 310 -316
+cell  417 {ucCentral} he 311 -317
+cell  418 {ucCentral} he 312 -318
+cell  419 {ucCentral} he 313 -319
+cell  420 {ucCentral} he 314 -320
+cell  421 {ucCentral} he 315 -321
+
+cell  422 {ucCentral} absorber -330
+cell  423 {ucCentral} hastelloy -331 330
+    '''
+    cells += '''
+% Universe {ucOuter}: CONTROL ROD U3 
+% Similar to fuel cell, but with helium in channels
+cell  430 {ucOuter} graphite -301 303 316 317 318 319 320 321  
+cell  431 {ucOuter} blanket  -302 301 
+cell  432 {ucOuter} blanket -303 331
+cell  433 {ucOuter} void   302 
+cell  434 {ucOuter} absorber -304 
+cell  435 {ucOuter} absorber -305 
+cell  436 {ucOuter} absorber -306 
+cell  437 {ucOuter} absorber -307 
+cell  438 {ucOuter} absorber -308 
+cell  439 {ucOuter} absorber -309 
+
+cell  440 {ucOuter} hastelloy 304 -310
+cell  441 {ucOuter} hastelloy 305 -311
+cell  442 {ucOuter} hastelloy 306 -312
+cell  443 {ucOuter} hastelloy 307 -313
+cell  444 {ucOuter} hastelloy 308 -314
+cell  445 {ucOuter} hastelloy 309 -315
+
+cell  446 {ucOuter} he 310 -316
+cell  447 {ucOuter} he 311 -317
+cell  448 {ucOuter} he 312 -318
+cell  449 {ucOuter} he 313 -319
+cell  450 {ucOuter} he 314 -320
+cell  451 {ucOuter} he 315 -321
+
+cell  452 {ucOuter} blanket -330
+cell  453 {ucOuter} blanket -331 330
+    '''
+    cells += '''
+% Universe {ucCentralOuter}: CONTROL ROD U3 
+% Similar to fuel cell, but with helium in channels
+cell  460 {ucCentralOuter} graphite -301 303 316 317 318 319 320 321  
+cell  461 {ucCentralOuter} blanket  -302 301 
+cell  462 {ucCentralOuter} blanket -303 331
+cell  463 {ucCentralOuter} void   302 
+cell  464 {ucCentralOuter} absorber -304 
+cell  465 {ucCentralOuter} absorber -305 
+cell  466 {ucCentralOuter} absorber -306 
+cell  467 {ucCentralOuter} absorber -307 
+cell  468 {ucCentralOuter} absorber -308 
+cell  469 {ucCentralOuter} absorber -309 
+
+cell  470 {ucCentralOuter} hastelloy 304 -310
+cell  471 {ucCentralOuter} hastelloy 305 -311
+cell  472 {ucCentralOuter} hastelloy 306 -312
+cell  473 {ucCentralOuter} hastelloy 307 -313
+cell  474 {ucCentralOuter} hastelloy 308 -314
+cell  475 {ucCentralOuter} hastelloy 309 -315
+
+cell  476 {ucCentralOuter} he 310 -316
+cell  477 {ucCentralOuter} he 311 -317
+cell  478 {ucCentralOuter} he 312 -318
+cell  479 {ucCentralOuter} he 313 -319
+cell  480 {ucCentralOuter} he 314 -320
+cell  481 {ucCentralOuter} he 315 -321
+
+cell  482 {ucCentralOuter} absorber -330
+cell  483 {ucCentralOuter} hastelloy -331 330
+    '''
+    cells += '''
 % Universe {uup}: UPPER CHANNEL U4
 cell 503 {uup} fuel     -403  404 -405	    % fuel cap
 cell 504 {uup} graphite  403 -401  404 -405	% graphite,level1
