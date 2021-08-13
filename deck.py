@@ -12,7 +12,6 @@ def write_deck(fsf=0.07, relba=0.08, \
                slit=0.2, temp=700, r2=3.3, rs=0.9, \
                rfuel=150, rcore=215, zcore=400, refl_ht=100, \
                name='Test deck', BlanketFraction=1, repro=False, controlRods=False, tempAug=None):
-
     '''Write the actual Serpent deck
 	Inputs: these are old
 * channel_pitch:  hexagonal pitch of fuel cells [cm]
@@ -155,7 +154,6 @@ set nfg  2  0.625E-6
 set pop 50000 200 15
 set nbuf 15
 
-
 %% --- Data Libraries
 set acelib "/opt/serpent/xsdata/jeff31/sss_jeff31u.xsdata"
 set declib "/opt/serpent/xsdata/jeff31/sss_jeff31.dec"
@@ -163,13 +161,22 @@ set nfylib "/opt/serpent/xsdata/jeff31/sss_jeff31.nfy"
 	'''
     output += data_cards
 
+    radiusLength = int(228.6*2*10)
+    heightLength = int(331.2*10)
+
     plot_cards = '''
 % PLOTS
-%plot 1 3000 3000 0  -300 300  -80 560
-%plot 2 3000 3000 0  -300 300  -80 560
-%plot 3 3000 3000 29 %[250 -100 100 -100 100]
+plot 1 3000 3000 0
+plot 2 {radiusLength} {heightLength} 0
+plot 3 3000 3000 29
 plot 3 3000 3000 29 -50 50 -50 50
-%plot 3 3000 3000 29 -5 5 -5 5
+plot 3 3000 3000 29 -5 5 -5 5
+% Mesh
+mesh 1 3000 3000
+%mesh 2 3000 3000 0  -300 300  -80 560
+mesh 3 3000 3000
+%mesh 3 3000 3000 0 -50 50 -50 50
+%mesh 3 3000 3000 0 -5 5 -5 5
 	'''
     output += plot_cards
 

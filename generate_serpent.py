@@ -24,8 +24,7 @@ TEMP = 700  # temp in C nominal 700C
 
 cwdStart = os.getcwd()
 
-dirName = "MSIBR_ControlRods"
-
+dirName = "MSIBR_NominalPlots"
 os.mkdir(dirName)
 os.chdir(dirName)
 
@@ -49,7 +48,6 @@ repros = np.array([[False, False, False, False, False, False, False, False, Fals
 
 Augs = ['Graphite', 'Fuel', 'Blanket']
 tempRange = np.linspace(-100, 100, 5)
-
 tempAugTemplate = {
     'Graphite': TEMP,
     'Fuel': TEMP,
@@ -95,19 +93,16 @@ print(centralChange)
 print(outerChange)
 
 
-variable1 = centralChange
-variable2 = outerChange
-
+variable1 = [1]
+variable2 = [1]
 
 for i in range(0, len(variable1)):
     print(str(np.round(i / len(variable1) * 100, 2)) + "%")
     v1 = variable1[i]
-
-    if True:
+    if False:
         v1 = v1
         print(v1)
         v1Name = 'CR_' + str(np.count_nonzero(list(v1.values())))
-
         pass
     else:
         v1Name = 'h_' + str(v1)
@@ -117,11 +112,10 @@ for i in range(0, len(variable1)):
     for j in range(0, len(variable2)):
 
         v2 = variable2[j]
-
         print(v2)
         # tempAug[v1] += v2
         print(tempAug)
-        if True:
+        if False:
             v2 = v2
             v2Name = 'OR_' + str(np.count_nonzero(list(v2.values())))
             pass
@@ -135,8 +129,7 @@ for i in range(0, len(variable1)):
         serp_deck = deck.write_deck(fsf=FSF, relba=RELBA, pitch=PITCH, slit=0.108, temp=700,
                                     rfuel=RFUEL, rcore=RCORE, r2=R2, zcore=140, refl_ht=ZREFL,
                                     name=title, BlanketFraction=0.8,
-                                    repro=False, controlRods=[v1, v2])
-
+                                    repro=False, controlRods=False)
 
         # tempAug[v1] -= v2
 
