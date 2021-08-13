@@ -161,10 +161,13 @@ set nfylib "/opt/serpent/xsdata/jeff31/sss_jeff31.nfy"
 	'''
     output += data_cards
 
+    radiusLength = int(228.6*2*10)
+    heightLength = int(331.2*10)
+
     plot_cards = '''
 % PLOTS
 plot 1 3000 3000 0
-plot 2 3000 3000 0  -300 300  -80 560
+plot 2 {radiusLength} {heightLength} 0
 plot 3 3000 3000 29
 plot 3 3000 3000 29 -50 50 -50 50
 plot 3 3000 3000 29 -5 5 -5 5
