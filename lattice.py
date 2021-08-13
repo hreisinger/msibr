@@ -20,17 +20,20 @@ def write_lattice(rmax=100, pitch=11.5, core=200, nlat='1',
 		lattice:	string containing the generated lattice card'''
 
     # Structure of a SERPENT lattice card
+    print('controlRod', controlRods)
+    controlRodsU = None
+    ConRod = None
     if controlRodsU is None:
         controlRodsU = [51, 52, 53, 54]
-    if controlRods is None or False:
-        controlRods = [{'Center': False, 'NE': False, 'SE': False, 'SW': False, 'NW': False},
-                       {'Center': False, 'NE': False, 'SE': False, 'SW': False, 'NW': False}]
+    if controlRods is None or controlRods is False:
+        ConRod = [{'Center': False, 'NE': False, 'SE': False, 'SW': False, 'NW': False},
+                  {'Center': False, 'NE': False, 'SE': False, 'SW': False, 'NW': False}]
     if controlRods is True:
-        controlRods = [{'Center': True, 'NE': True, 'SE': True, 'SW': True, 'NW': True},
-                       {'Center': True, 'NE': True, 'SE': True, 'SW': True, 'NW': True}]
-
-    centralRods = controlRods[0]
-    outerRods = controlRods[1]
+        ConRod = [{'Center': True, 'NE': True, 'SE': True, 'SW': True, 'NW': True},
+                  {'Center': True, 'NE': True, 'SE': True, 'SW': True, 'NW': True}]
+    print(ConRod)
+    centralRods = ConRod[0]
+    outerRods = ConRod[1]
     '''lat <u0> <type> <x0> <y0> <nx> <ny> <p>
 	#
 	# <u0> is the universe number of the lattice
