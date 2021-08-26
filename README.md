@@ -7,17 +7,17 @@ MSIBR is the conjoining join to the paper [paper name] (paper url). This code wi
 
 - Python Files 
 - Run Folders
-  - variable1[0]
-    - variable2[0]
+  - Folder: variable1[0]
+    - Folder: variable2[0]
     
-      MSiBR.inp (variable1[0], variable2[0])
-    - variable2[1]
+      Input File: MSiBR.inp (variable1[0], variable2[0])
+    - Folder: variable2[1]
 
-      MSiBR.inp (variable1[0], variable2[1])
+      Input File: MSiBR.inp (variable1[0], variable2[1])
     - ...
-    - variable2[-1]
-  - variable1[1]
+    - Folder: variable2[-1]
+  - Folder: variable1[1]
   - ...
-  - variable1[-1]
+  - Folder: variable1[-1]
   - runAll.py
 
