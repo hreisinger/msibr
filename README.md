@@ -1,5 +1,5 @@
 # MSIBR
-MSIBR is the conjoining join to the paper [paper name] (paper url). This code will generate Serpent2 input files with a standard file format. There may be problems between Linux and Windows due to / vs \.
+MSIBR is the conjoining join to the paper [paper name] (paper url). This code will generate Serpent2 input files with a standard file format. There may be problems using Linux.
 
 
 ## File System
