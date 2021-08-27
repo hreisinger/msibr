@@ -14,24 +14,23 @@ import shutil
 FSF = .165  # fuel salt fraction
 PITCH = 14  # l * 2 from the lattice optimization script
 R2 = 4.5
-SLIT = 0.323  # TODO: Calculate from relba (only effects to center cell)
+SLIT = 0.108
 RELBA = 0.72  # relative blanket fraction (same as in lattice analysis)
 RFUEL = 152.4  # radius of fuel portion of the core
 RCORE = 213.36  # outer radius of core vessel
 ZCORE = 140
 ZREFL = 100
 TEMP = 700  # temp in C nominal 700C
+BLANKETFRAC = 0.8
 
 cwdStart = os.getcwd()
 
 dirName = "MSIBR_NominalPlots"  # Name of the main folder everything will be put into
-os.mkdir(dirName)
-os.chdir(dirName)
-
-sigFig = 3
+os.mkdir(dirName)  # Creates new run directory
+os.chdir(dirName)  # Enters new run directory
 
 '''
-This is the start of input parameter examples
+Start of input parameter examples
 '''
 
 # Arrays where each element is a new run | deck.write_deck(VariableName)
@@ -100,7 +99,7 @@ outerRods = {
     'NW': False
 }
 
-# creates a copy not a pointer of the template
+# Creates a copy not a pointer of the template
 outerChange = [outerRods.copy()]
 centralChange = [centralRods.copy()]
 
@@ -119,46 +118,71 @@ for i in range(0, len(rodLocations)):
 variable1 = [1]
 variable2 = [1]
 
+'''
+End of input parameter examples
+Start of main loop
+'''
+
+# Begins looping through variable1
 for i in range(0, len(variable1)):
-    print(str(np.round(i / len(variable1) * 100, 2)) + "%")
-    # v1 is the current element in variable 1
-    v1 = variable1[i]
-    # This is where the name for current folder is made
-    if False:
-        v1 = v1
-        print(v1)
-        # in instances where the input is a list (reprocessing and Control Rods) it is useful just to count the
-        # number of Trues as the label for the folder
-        v1Name = 'CR_' + str(np.count_nonzero(list(v1.values())))
-        pass
-    else:
-        v1Name = 'h_' + str(v1)
-    os.mkdir(v1Name)
-    os.chdir(v1Name)
+    print(str(np.round(i / len(variable1) * 100, 2)) + "%")  # User feedback for current %
 
+    v1 = variable1[i]  # Current element in variable 1
+    #  Name for current folder is made. A new prefix or a custom denoter can replace this
+    v1Name = 'h_' + str(v1)
+    # v1Name = 'CR_' + str(np.count_nonzero(list(v1.values())))
+    # This second definition is useful if v1 is a list or dict (Reprocessing or Control Rods)
+
+    os.mkdir(v1Name)  # Makes the directory v1Name
+    os.chdir(v1Name)  # Enters the directory v1Name
+
+    #  Begin looping through variable2
     for j in range(0, len(variable2)):
-        # v2 is the current element in variable 2
-        v2 = variable2[j]
-        print(v2)
+        v2 = variable2[j]  # Current element in variable 2
+
         # tempAug[v1] += v2
-        print(tempAug)
-        if False:
-            v2 = v2
-            v2Name = 'OR_' + str(np.count_nonzero(list(v2.values())))
-            pass
-        else:
-            v2Name = 'b_' + str(np.round(v2, 2))
-        os.mkdir(v2Name)
-        os.chdir(v2Name)
+        # Example of temperature augmentation from variable1=Augs and variable2=tempRange
 
-        title = 'MSiBR: {} {}'.format(v1Name, v2Name)
+        #  Name for current folder is made. A new prefix or a custom denoter can replace this
+        v2Name = 'b_' + str(np.round(v2, 2))
+        #  v2Name = 'OR_' + str(np.count_nonzero(list(v2.values())))
+        # This second definition is useful if v1 is a list or dict (Reprocessing or Control Rods)
 
-        serp_deck = deck.write_deck(fsf=FSF, relba=RELBA, pitch=PITCH, slit=0.108, temp=700,
-                                    rfuel=RFUEL, rcore=RCORE, r2=R2, zcore=140, refl_ht=ZREFL,
-                                    name=title, BlanketFraction=0.8,
-                                    repro=False, controlRods=False, tempAug=False)
+        os.mkdir(v2Name)  # Makes the directory v2Name
+        os.chdir(v2Name)  # Enters the directory v2Name
+
+        title = 'MSiBR: {} {}'.format(v1Name, v2Name)  # title of MSiBR.inp file
+
+        '''
+        This function creates a DOS based input deck as a string. With this current setup of this file only 2 variables
+        can be run through the function.
+            1. Define variable1 and variable2 with your desired parameters
+            2. Change the appropriate base nominal parameter(s) with v1 or v2 
+        '''
+        serp_deck = deck.write_deck(fsf=FSF,                        # Fuel salt fraction
+                                    relba=RELBA,                    # Relative blanket fraction
+                                    pitch=PITCH,                    # Lattice pitch
+                                    slit=SLIT,                      # Slit
+                                    temp=TEMP,                      # Current default temperature
+                                                                    # ↳ variable=temperatures
+                                    rfuel=RFUEL,                    # Radius of fuel portion of the core
+                                    rcore=RCORE,                    # Outer radius of core vessel
+                                    r2=R2,                          # R2
+                                    zcore=ZCORE,                    # Height of the central core
+                                                                    # ↳ variable=heights
+                                    refl_ht=ZREFL,                  # Height of the reflector
+                                    name=title,                     # title of MSiBR.inp file
+                                    BlanketFraction=BLANKETFRAC,    # Blanket to Fuel Fraction
+                                                                    # ↳ variable=BlanketFraction
+                                    repro=False,                    # Reprocessing conditions
+                                                                    # ↳ variable=repros
+                                    controlRods=False,              # Control rod conditions
+                                                                    # ↳ variable=False,True,[centralRods,outerRods]
+                                    tempAug=False)                  # Temperature augmentation conditions
+                                                                    # ↳ variable=False,True,tempAug
 
         # tempAug[v1] -= v2
+        # If tempAug Example is done, this is necessary to bring tempAug back to template temperatures
 
         FILENAME = 'MSiBR.inp'
         with open(FILENAME, 'w') as f:
@@ -168,6 +192,6 @@ for i in range(0, len(variable1)):
     os.chdir('..')  # moves back to the main variable 1 directory
 os.chdir(cwdStart)  # moves back to the main directory
 
-# copies a useful run script to the main directory
+# copies a useful run script to the main directory. runAll.py works in a Linux environment
 shutil.copy('{}\{}'.format(cwdStart, 'runAll.py'), '{}\{}'.format(cwdStart, dirName))
 
