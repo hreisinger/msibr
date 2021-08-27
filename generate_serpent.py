@@ -184,7 +184,8 @@ for i in range(0, len(variable1)):
         # tempAug[v1] -= v2
         # If tempAug Example is done, this is necessary to bring tempAug back to template temperatures
 
-        FILENAME = 'MSiBR.inp'
+        FILENAME = 'MSiBR.inp'  # Defining the input file name of all the input files
+        # Writes input files
         with open(FILENAME, 'w') as f:
             f.write(serp_deck)
 
