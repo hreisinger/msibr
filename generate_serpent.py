@@ -173,7 +173,7 @@ for i in range(0, len(variable1)):
                                     refl_ht=ZREFL,                  # Height of the reflector
                                     name=title,                     # title of MSiBR.inp file
                                     BlanketFraction=BLANKETFRAC,    # Blanket to Fuel Fraction
-                                                                    # ↳ variable=BlanketFraction
+                                                                    # ↳ variable=blankets
                                     repro=False,                    # Reprocessing conditions
                                                                     # ↳ variable=repros
                                     controlRods=False,              # Control rod conditions
