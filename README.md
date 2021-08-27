@@ -5,7 +5,16 @@ MSIBR is the conjoining join to the paper [paper name] (paper url). This code wi
 ## File System
 **Main Folder**
 
-- Python Files 
+- Python Files
+  - generate_serpent.py: Main file to create input decks | calls deck.py
+  - calculateSlit.py: Converts the variable blanket fraction into the slit width between graphite hexagons
+  - deck.py: Organizes input deck and outputs string | calls lattice.py, surfs.py, cells.py, materials.py, reprocessing.py
+  - cells.py: Cell creation
+  - lattice.py: Lattice creation
+  - materials.py: Material definitions
+  - surfs.py: Surface creation
+  - reprocessing.py: If toggeled will create a reprocessing scheme
+  - run
 - Run Folders
   - Folder: variable1[0]
     - Folder: variable2[0]
