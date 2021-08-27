@@ -21,7 +21,7 @@ RCORE = 213.36  # outer radius of core vessel
 ZCORE = 140
 ZREFL = 100
 TEMP = 700  # temp in C nominal 700C
-BLANKETFRAC = 0.8
+BLANKETFRAC = 0.8  # Fraction of blanket to fuel can be converted to slit width with calculateSlit.py
 
 cwdStart = os.getcwd()
 
