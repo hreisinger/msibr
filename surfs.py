@@ -78,7 +78,7 @@ def write_surfs(fsf, relba, pitch, slit, temp, r2, rs, rfuel, rcore_inner, rcore
     blanketA0 = blanketfraction * r1 ** 2 * math.pi
     blanketarea = blanketA0 * relba
     l2 = math.sqrt(l ** 2 - blanketarea / (2.0 * math.sqrt(3.0)))
-    if tempAug is None:
+    if tempAug is None or tempAug is False:
         hexg = l2 + (temp - 700.0) * gr_exp * l2  # radius of graphite, inside slit with thermal expansion 700C nominal temp
     else:
         hexg = l2 + (tempAug['Graphite'] - 700.0) * gr_exp * l2

@@ -50,7 +50,7 @@ Inputs: these are old
 Outputs:
 	mats:    String containing the material cards'''
 
-	if tempAug is None:
+	if tempAug is None or tempAug is False:
 		tempA = temp
 
 		tempG = tempA + 273

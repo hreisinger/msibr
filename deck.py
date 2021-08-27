@@ -7,10 +7,10 @@ import math
 import lattice, surfs, cells, materials, reprocessing
 
 
-def write_deck(fsf=0.07, relba=0.08, \
-               pitch=11.500, \
-               slit=0.2, temp=700, r2=3.3, rs=0.9, \
-               rfuel=150, rcore=215, zcore=400, refl_ht=100, \
+def write_deck(fsf=0.07, relba=0.08,
+               pitch=11.500,
+               slit=0.2, temp=700, r2=3.3, rs=0.9,
+               rfuel=150, rcore=215, zcore=400, refl_ht=100,
                name='Test deck', BlanketFraction=1, repro=False, controlRods=False, tempAug=None):
     '''Write the actual Serpent deck
 	Inputs: these are old
@@ -119,7 +119,8 @@ Advisor: Dr. Ondrej Chvala
 
     # Create the middle/active core
     lattice_cards = lattice.write_lattice(rfuel, PITCH, rcore_inner, LATS[0], ub, uf, uc, fuel_cells, blan_cells,
-                                          controlRodsU=[ucNone, ucCentral, ucOuter, ucCentralOuter], controlRods=controlRods)
+                                          controlRodsU=[ucNone, ucCentral, ucOuter, ucCentralOuter],
+                                          controlRods=controlRods)
     # Create the upper plenum
     lattice_cards += lattice.write_lattice(rfuel, PITCH, rcore_inner, LATS[1], ub, uup, uuc, fuel_cells, blan_cells)
     # Create the lower level -1
@@ -161,8 +162,8 @@ set nfylib "/opt/serpent/xsdata/jeff31/sss_jeff31.nfy"
 	'''
     output += data_cards
 
-    radiusLength = int(228.6*2*10)
-    heightLength = int(331.2*10)
+    radiusLength = int(228.6 * 2 * 10)
+    heightLength = int(331.2 * 10)
 
     plot_cards = '''
 % PLOTS
