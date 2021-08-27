@@ -19,10 +19,10 @@ MSIBR is the conjoining join to the paper [paper name] (paper url). This code wi
   - Folder: variable1[0]
     - Folder: variable2[0]
     
-      Input File: MSiBR.inp (variable1[0], variable2[0])
+        Input File: MSiBR.inp (variable1[0], variable2[0])
     - Folder: variable2[1]
 
-      Input File: MSiBR.inp (variable1[0], variable2[1])
+        Input File: MSiBR.inp (variable1[0], variable2[1])
     - ...
     - Folder: variable2[-1]
   - Folder: variable1[1]
