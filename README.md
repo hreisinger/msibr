@@ -14,7 +14,7 @@ MSIBR is the conjoining join to the paper [paper name] (paper url). This code wi
   - materials.py: Material definitions
   - surfs.py: Surface creation
   - reprocessing.py: If toggeled will create a reprocessing scheme
-  - run
+  - runAll.py: A simple file which loops through all the current input decks (should be inside the main run folder)
 - Run Folders
   - Folder: variable1[0]
     - Folder: variable2[0]
